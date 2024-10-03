@@ -1,9 +1,9 @@
 
 #include <iostream>
 #include <iomanip>
-#include "lib/communication/canbus.h"
+#include "../lib/communication/canbus.h"
 #include <libconfig.h++>
-#include "lib/communication/CANOpenMaster.h"
+#include "../lib/configuration/Config.h"
 
 int main() {
     std::cout << R"(
@@ -12,7 +12,7 @@ int main() {
  _\ \/ _ \/ / _ `/ __/ _  / _ \/ _ `/ __// / | |/|/ / -_) _ \/ __/ -_)
 /___/\___/_/\_,_/_/ /____/\___/\_,_/\__//_/  |__,__/\__/_//_/\__/\__/
 )"
-    << std::endl;
+            << std::endl;
     Config cfg("../boat.cfg");
     CanBus can_control(cfg.read("can.control"));
 

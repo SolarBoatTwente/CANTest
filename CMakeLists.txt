@@ -15,5 +15,5 @@ ADD_LIBRARY(BoatLibrary
         lib/configuration/Config.cpp lib/configuration/Config.h
         lib/configuration/ConfigSection.cpp lib/configuration/ConfigSection.h)
 
-add_executable(CANTest main.cpp)
+add_executable(CANTest src/main.cpp)
 target_link_libraries(${PROJECT_NAME} BoatLibrary spdlog lely-io2 lely-util lely-can lely-ev lely-coapp pthread config++ paho-mqtt3as paho-mqttpp3 fmt)
