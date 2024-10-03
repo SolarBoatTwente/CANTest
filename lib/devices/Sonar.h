@@ -16,6 +16,7 @@ public:
         Device(config, can, DeviceType::Sonar)
     {
         this->node_id = config.lookup("can.node_id");
+        this->message_id_distance = static_cast<uint32_t>(config.lookup("can.message_id_distance")) | this->node_id;
         std::cout << "Sonar created" << std::endl ;
     }
 

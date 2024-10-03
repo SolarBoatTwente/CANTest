@@ -30,9 +30,17 @@ int main() {
 
     // set in can
     can_control.registerReadFrame(read_sonar_f_distance);
-    while(1) {
-        this_thread::sleep_for(chrono::milliseconds(10000));
-    }
+    can_control.start();
+    std::cout << "registered frame and started can" <<std::endl;
+
+    // sending message over the CAN bus
+    can_msg msg{};
+    msg.len = 8;
+    msg.flags = static_cast<uint_least8_t>(io::CanFlag::NONE);
+    msg.id = sonar_front.message_id_distance;
+    msg.data[0] = 0x02;
+    msg.data[1] = 0x03;
+    can_control.sendMessage(msg);
 
     pause();
 }
