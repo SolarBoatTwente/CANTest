@@ -13,7 +13,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 ADD_LIBRARY(BoatLibrary
         lib/communication/canbus.cpp lib/communication/canbus.h
         lib/configuration/Config.cpp lib/configuration/Config.h
-        lib/configuration/ConfigSection.cpp lib/configuration/ConfigSection.h)
+        lib/configuration/ConfigSection.cpp lib/configuration/ConfigSection.h
+        lib/Device.cpp lib/Device.h
+        lib/devices/Sonar.cpp
+        lib/devices/Sonar.h)
 
 add_executable(CANTest src/main.cpp)
 target_link_libraries(${PROJECT_NAME} BoatLibrary spdlog lely-io2 lely-util lely-can lely-ev lely-coapp pthread config++ paho-mqtt3as paho-mqttpp3 fmt)
