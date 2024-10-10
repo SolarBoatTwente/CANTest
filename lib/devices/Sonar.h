@@ -27,9 +27,8 @@ public:
 
     uint32_t message_id_distance;
 
-    void doStuffForSonar(const can_msg *msg, std::error_code ec, lely::io::CanRouterReadFrame & frame) {
+    void doStuffForSonar(const can_msg *msg, std::error_code ec) {
         std::cout << "Doing stuff here for the Sonar" << std::endl ;
-        this->can_.registerReadFrame(frame);
     }
 
 };

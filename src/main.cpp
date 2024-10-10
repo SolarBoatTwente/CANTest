@@ -7,6 +7,11 @@
 #include "../lib/configuration/ConfigSection.h"
 #include "../lib/devices/Sonar.h"
 
+
+void test() {
+    std::cout << "Hello World!\n from test" << std::endl;
+}
+
 int main() {
     std::cout << R"(
    ____     __         ___            __ ______                __
@@ -22,14 +27,22 @@ int main() {
     //class impl
     class Sonar sonar_front(*new ConfigSection(cfg, "sonar_front"), can_control);
 
-    // create function
-    io::CanRouterReadFrame read_sonar_f_distance(sonar_front.message_id_distance, io::CanFlag::NONE, [&](const can_msg* msg, std::error_code ec) {
-        sonar_front.doStuffForSonar(msg, ec, read_sonar_f_distance);
-        return;
-    });
+    std::unordered_map<int, std::function<void(const can_msg *msg, std::error_code ec)>> canMessageHandlers = {
+        {1, [&](const can_msg *msg, std::error_code ec) { sonar_front.doStuffForSonar(msg, ec); }}
+    };
+
+    for (auto can_message_handler: canMessageHandlers) {
+        io::CanRouterReadFrame handle_Can_Frame(can_message_handler.first, io::CanFlag::NONE, [&](const can_msg* msg, std::error_code ec) {
+            //logger
+            //trycatch
+            std::cout << "logging and try catching the method" << std::endl;
+            can_message_handler.second(msg, ec);
+            can_control.registerReadFrame(handle_Can_Frame);
+        });
+        can_control.registerReadFrame(handle_Can_Frame);
+    }
 
     // set in can
-    can_control.registerReadFrame(read_sonar_f_distance);
     can_control.start();
     std::cout << "registered frame and started can" <<std::endl;
 
