@@ -30,10 +30,7 @@ int main()
         }
     };
 
-
     std::vector<std::shared_ptr<io::CanRouterReadFrame>> frames;
-
-
 
     // Define the mapping of message IDs to handler functions
     std::vector<std::tuple<int, std::function<void(const can_msg*, std::error_code)>>> handlers = {
@@ -70,69 +67,6 @@ int main()
         // Register the initial frame
         register_new_frame(message_id, handler_func);
     }
-
-
-
-    //
-    //
-    // // Loop through the handlers and create CanRouterReadFrame for each one
-    // for (auto& handler_entry : handlers) {
-    //     int message_id = std::get<0>(handler_entry);
-    //     auto& handler_func = std::get<1>(handler_entry);
-    //
-    //     // Create a shared pointer for each CanRouterReadFrame
-    //     std::shared_ptr<io::CanRouterReadFrame> frame = std::make_shared<io::CanRouterReadFrame>(
-    //         message_id,
-    //         io::CanFlag::NONE,
-    //         [frame, &handler_func, &can_control](const can_msg* msg, std::error_code ec) {
-    //             // Call the corresponding handler function
-    //             std::cout << "Test from inside the lambda" << std::endl;
-    //             handler_func(msg, ec);
-    //             can_control.registerReadFrame(*frame);
-    //         }
-    //     );
-    //
-    //     // Register the frame and store it
-    //     can_control.registerReadFrame(*frame);
-    //     frames.push_back(frame);
-    // }
-    //
-
-
-
-
-
-
-
-    // std::list<struct io_can_rt_read_msg> frames;
-
-
-    // {
-    //     // Create a shared pointer for the CanRouterReadFrame
-    //     shared_ptr<io::CanRouterReadFrame> read_frame = std::make_shared<io::CanRouterReadFrame>(
-    //         sonar_front.message_id_distance,
-    //         io::CanFlag::NONE,
-    //         [&read_frame, &messageIds, &can_control](const can_msg* msg, std::error_code ec)
-    //         {
-    //             std::cout << "Test from inside the lambda" << std::endl;
-    //             // auto it = messageIds.find(msg->id);
-    //             // if (it != messageIds.end())
-    //             // {
-    //             //     it->second(msg, ec);
-    //             // }
-    //             can_control.registerReadFrame(*read_frame);
-    //             // You don't need to re-register the frame inside the lambda
-    //             return;
-    //         }
-    //     );
-    //
-    //     // Since it's now a shared_ptr, you can use the pointer safely
-    //     frames.push_back(*read_frame); // Dereference to get the actual frame
-    //     can_control.registerReadFrame(*read_frame);
-    // }
-
-
-    cout << frames.size() << std::endl;
 
     // set in can
     can_control.start();
