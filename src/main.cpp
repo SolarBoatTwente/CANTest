@@ -30,19 +30,21 @@ int main()
         }
     };
 
-    std::list<lely::io::CanRouterReadFrame> frames;
+    std::list<struct io_can_rt_read_msg> frames;
 
 
     io::CanRouterReadFrame read_frame(sonar_front.message_id_distance, io::CanFlag::NONE,
                                       [&](const can_msg* msg, std::error_code ec)
                                       {
                                           messageIds.find(msg->id)->second(msg, ec);
-                                          // sonar_front.doStuffForSonar(msg, ec);
                                           can_control.registerReadFrame(read_frame);
                                           return;
                                       });
     frames.push_back(read_frame);
     can_control.registerReadFrame(read_frame);
+
+
+    cout << frames.size() << std::endl;
 
 
     // can_control.registerReadFrame(frames.back());
