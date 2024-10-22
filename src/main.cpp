@@ -33,32 +33,32 @@ int main()
     std::list<struct io_can_rt_read_msg> frames;
 
 
-    io::CanRouterReadFrame read_frame(sonar_front.message_id_distance, io::CanFlag::NONE,
-                                      [&](const can_msg* msg, std::error_code ec)
-                                      {
-                                          messageIds.find(msg->id)->second(msg, ec);
-                                          can_control.registerReadFrame(read_frame);
-                                          return;
-                                      });
-    frames.push_back(read_frame);
-    can_control.registerReadFrame(read_frame);
+    {
+        // Create a shared pointer for the CanRouterReadFrame
+        shared_ptr<io::CanRouterReadFrame> read_frame = std::make_shared<io::CanRouterReadFrame>(
+            sonar_front.message_id_distance,
+            io::CanFlag::NONE,
+            [&, read_frame](const can_msg* msg, std::error_code ec)
+            {
+                std::cout << "Test from inside the lambda" << std::endl;
+                auto it = messageIds.find(msg->id);
+                if (it != messageIds.end())
+                {
+                    it->second(msg, ec);
+                }
+                can_control.registerReadFrame(*read_frame);
+                // You don't need to re-register the frame inside the lambda
+                return;
+            }
+        );
+
+        // Since it's now a shared_ptr, you can use the pointer safely
+        frames.push_back(*read_frame); // Dereference to get the actual frame
+        can_control.registerReadFrame(*read_frame); // Dereference to pass the frame
+    }
 
 
     cout << frames.size() << std::endl;
-
-
-    // can_control.registerReadFrame(frames.back());
-
-
-    // create function
-    // io::CanRouterReadFrame read_frame(sonar_front.message_id_distance, io::CanFlag::NONE,
-    //                                              [&](const can_msg* msg, std::error_code ec)
-    //                                              {
-    //                                                  messageIds.find(msg->id)->second(msg, ec);
-    //                                                  // sonar_front.doStuffForSonar(msg, ec);
-    //                                                  can_control.registerReadFrame(read_frame);
-    //                                                  return;
-    //                                              });
 
     // set in can
     can_control.start();
